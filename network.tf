@@ -4,7 +4,7 @@ locals {
   private_subnet_cidrs = slice(local.subnet_cidrs, 2, 4)
 
   # Create indexed maps
-  public_subnet_map = zipmap([for idx, cidr in local.public_subnet_cidrs : idx], local.public_subnet_cidrs)
+  public_subnet_map  = zipmap([for idx, cidr in local.public_subnet_cidrs : idx], local.public_subnet_cidrs)
   private_subnet_map = zipmap([for idx, cidr in local.private_subnet_cidrs : idx], local.private_subnet_cidrs)
 }
 
@@ -42,7 +42,7 @@ resource "aws_subnet" "private_subnets" {
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main_vpc.id
-  
+
   tags = {
     Name = "main-igw"
   }
@@ -54,7 +54,7 @@ resource "aws_eip" "nat_eip" {
 
 resource "aws_nat_gateway" "nat_gw" {
   allocation_id = aws_eip.nat_eip.id
-  subnet_id     = values(aws_subnet.public_subnets)[0].id   # Placing NAT in the first public subnet
+  subnet_id     = values(aws_subnet.public_subnets)[0].id # Placing NAT in the first public subnet
 
   tags = {
     Name = "main-nat-gateway"
@@ -109,7 +109,7 @@ resource "aws_security_group" "public_sg" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.my_ip]
   }
 
   egress {
@@ -141,7 +141,7 @@ resource "aws_security_group" "private_sg" {
 
 resource "aws_db_subnet_group" "db_subnet_group" {
   name       = "my-db-subnet-group"
-  subnet_ids = [for subnet in aws_subnet.private_subnets: subnet.id]
+  subnet_ids = [for subnet in aws_subnet.private_subnets : subnet.id]
 
   tags = {
     Name = "MyDBSubnetGroup"

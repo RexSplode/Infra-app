@@ -13,25 +13,29 @@ variable "vpc_cidr" {
   default = "192.168.0.0/25"
 }
 
-variable "preferred_ami" {
-    type = string
-    default = "ami-0c0493bbac867d427"
-  
-}
 
 variable "ec2_keypair_name" {
   type = string
 }
 variable "db_name" {
-  type = string
+  type    = string
   default = "mydatabase"
 }
 
 variable "db_username" {
-    type = string
+  type = string
 }
 
 variable "db_password" {
   type = string
+}
+
+variable "my_ip" {
+  type = string
+}
+
+variable "instance_type" {
+  type = string
+  default = "t2.micro"
 }
 
